@@ -4,11 +4,12 @@ import sys
 import io
 import contextlib
 import traceback
+import random
 
 KEYWORDS = {
     "Tralalero Tralala": "assignment_start",
     "Bombardiro Crocodilo": "print_command",
-    "U Din Din Din Din Dun Ma Din Din Din Dun": "int(input())", #disabled for web
+    "U Din Din Din Din Dun Ma Din Din Din Dun": "int(input())",
     "Lirili Larila": "if",
     "Gusini": ":",
     "Boneca Ambalabu": "else:",
@@ -26,15 +27,42 @@ KEYWORDS = {
     "Chimpanzini Bananini": "-",
     "Bombombini Gusini": "*",
     "Capuccino Assassino": "/",
+    "RANDOM_TRALALERO": "random_command"
 }
+
+KEYWORD_HELP = """
+**Basic Commands:**
+*   `Tralalero Tralala variable Trippi Troppi value` : Assign value (e.g., `Tralalero Tralala x Trippi Troppi 10`)
+*   `Tralalero Tralala variable Trippi Troppi RANDOM_TRALALERO min max` : Assign random integer (e.g., `Tralalero Tralala cpu Trippi Troppi RANDOM_TRALALERO 1 3`)
+*   `Bombardiro Crocodilo value_or_variable` : Print something (e.g., `Bombardiro Crocodilo x`)
+
+**Control Flow:**
+*   `Lirili Larila condition Gusini` : If statement
+*   `Boneca Ambalabu` : Else statement
+*   `Trulimero Trulicina` : End If/Else block
+*   `Tung Tung Tung Tung Tung Tung Tung Tung Tung Sahur condition Bananini` : While loop
+*   `Ballerina Cappucina` : End While loop block
+
+**Operators:**
+*   `Brr Brr Patapim` : `+` | `Chimpanzini Bananini` : `-` | `Bombombini Gusini` : `*` | `Capuccino Assassino` : `/`
+*   `Trippi Troppi` : `==` | `La Vaca Saturno Saturnita` : `!=`
+*   `Frigo Camelo` : `>` | `Bombombini Gusini Gusini` : `<`
+*   `Frigo Camelo Trippi Troppi` : `>=` | `Bombombini Gusini Gusini Trippi Troppi` : `<=`
+
+**Comments:** `#`
+**Note:** Input (`U Din Din...`) is disabled.
+"""
+
 
 def translate_expression(expression_str):
     if KEYWORDS["U Din Din Din Din Dun Ma Din Din Din Dun"] in expression_str:
          raise ValueError("Errore Saturnita! Input ('U Din Din...') is not supported in the web version.")
+    if KEYWORDS["RANDOM_TRALALERO"] in expression_str:
+         raise SyntaxError("RANDOM_TRALALERO must be used directly in assignment, not within other expressions.")
 
     temp_expression = expression_str
     for br, py in sorted(KEYWORDS.items(), key=lambda item: len(item[0]), reverse=True):
-         if py not in [":", "else:", "dedent_marker", "if", "while", "print_command", "assignment_start", "int(input())"]:
+         if py not in [":", "else:", "dedent_marker", "if", "while", "print_command", "assignment_start", "int(input())", "random_command"]:
              temp_expression = temp_expression.replace(br, py)
     return temp_expression
 
@@ -85,8 +113,16 @@ def transpile_to_python(brainrot_code):
         if assign_match:
             var_name = assign_match.group(1)
             expression = assign_match.group(2).strip()
-            translated_expr = translate_expression(expression)
-            processed_line = f"{var_name} = {translated_expr}"
+            random_match = re.match(r"RANDOM_TRALALERO\s+(\S+)\s+(\S+)", expression)
+            if random_match:
+                 min_val_str = random_match.group(1)
+                 max_val_str = random_match.group(2)
+                 min_val_translated = translate_expression(min_val_str)
+                 max_val_translated = translate_expression(max_val_str)
+                 processed_line = f"{var_name} = random.randint({min_val_translated}, {max_val_translated})"
+            else:
+                 translated_expr = translate_expression(expression)
+                 processed_line = f"{var_name} = {translated_expr}"
 
         elif processed_line.startswith("Bombardiro Crocodilo"):
             print_match = re.match(r"Bombardiro Crocodilo(?:\s+(.*))?", processed_line)
@@ -120,7 +156,6 @@ def transpile_to_python(brainrot_code):
 
         elif processed_line == "else:":
             pass
-
         elif processed_line.startswith('#') or not processed_line:
             pass
 
@@ -139,45 +174,106 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Your Brainrot Code:")
-    example_code = """Keywords to remember chat
-    "Tralalero Tralala": "assignment_start",
-    "Bombardiro Crocodilo": "print_command",
-    "U Din Din Din Din Dun Ma Din Din Din Dun": "int(input())", #disabled for web
-    "Lirili Larila": "if",
-    "Gusini": ":",
-    "Boneca Ambalabu": "else:",
-    "Trulimero Trulicina": "dedent_marker",
-    "Tung Tung Tung Tung Tung Tung Tung Tung Tung Sahur": "while",
-    "Bananini": ":",
-    "Ballerina Cappucina": "dedent_marker",
-    "Frigo Camelo Trippi Troppi": ">=",
-    "Bombombini Gusini Gusini Trippi Troppi": "<=",
-    "Bombombini Gusini Gusini": "<",
-    "Frigo Camelo": ">",
-    "Trippi Troppi": "==",
-    "La Vaca Saturno Saturnita": "!=",
-    "Brr Brr Patapim": "+",
-    "Chimpanzini Bananini": "-",
-    "Bombombini Gusini": "*",
-    "Capuccino Assassino": "/",
+    example_code = """# Rock Paper Scissors - Brainrot Edition!
+Bombardiro Crocodilo "Benvenuti al Bombardiro Sasso Carta Forbice!"
+
+# Define choices: 1=Sasso (Rock), 2=Carta (Paper), 3=Forbice (Scissors)
+Tralalero Tralala SCELTA_SASSO Trippi Troppi 1
+Tralalero Tralala SCELTA_CARTA Trippi Troppi 2
+Tralalero Tralala SCELTA_FORBICE Trippi Troppi 3
+
+# --- Player's Choice (Simulated) ---
+# !!! EDIT THIS LINE TO CHANGE YOUR CHOICE !!!
+Tralalero Tralala scelta_giocatore Trippi Troppi SCELTA_CARTA # Change to SCELTA_SASSO or SCELTA_FORBICE
+# !!! ----------------------------- !!!
+
+Bombardiro Crocodilo "---"
+Bombardiro Crocodilo "Giocatore ha scelto:"
+Lirili Larila scelta_giocatore Trippi Troppi SCELTA_SASSO Gusini
+    Bombardiro Crocodilo "Sasso 🗿"
+Trulimero Trulicina
+Lirili Larila scelta_giocatore Trippi Troppi SCELTA_CARTA Gusini
+    Bombardiro Crocodilo "Carta 📄"
+Trulimero Trulicina
+Lirili Larila scelta_giocatore Trippi Troppi SCELTA_FORBICE Gusini
+    Bombardiro Crocodilo "Forbice ✂️"
+Trulimero Trulicina
+
+# --- Computer's Choice (Random) ---
+# Uses the special RANDOM_TRALALERO keyword
+Tralalero Tralala scelta_computer Trippi Troppi RANDOM_TRALALERO 1 3
+Bombardiro Crocodilo "Computer ha scelto:"
+Lirili Larila scelta_computer Trippi Troppi SCELTA_SASSO Gusini
+    Bombardiro Crocodilo "Sasso 🗿"
+Trulimero Trulicina
+Lirili Larila scelta_computer Trippi Troppi SCELTA_CARTA Gusini
+    Bombardiro Crocodilo "Carta 📄"
+Trulimero Trulicina
+Lirili Larila scelta_computer Trippi Troppi SCELTA_FORBICE Gusini
+    Bombardiro Crocodilo "Forbice ✂️"
+Trulimero Trulicina
+Bombardiro Crocodilo "---"
+
+
+# --- Determine the Winner ---
+Bombardiro Crocodilo "Risultato Tralalero:"
+
+# Check for Tie
+Lirili Larila scelta_giocatore Trippi Troppi scelta_computer Gusini
+    Bombardiro Crocodilo "Pareggio! Boneca Ambalabu!"
+Boneca Ambalabu # Not a tie, check win conditions
+
+    # Player chose Rock
+    Lirili Larila scelta_giocatore Trippi Troppi SCELTA_SASSO Gusini
+        Lirili Larila scelta_computer Trippi Troppi SCELTA_FORBICE Gusini
+            Bombardiro Crocodilo "Giocatore Vince! Sasso batte Forbice!"
+        Boneca Ambalabu # Computer chose Paper
+            Bombardiro Crocodilo "Computer Vince! Carta batte Sasso!"
+        Trulimero Trulicina
+    Trulimero Trulicina
+
+    # Player chose Paper
+    Lirili Larila scelta_giocatore Trippi Troppi SCELTA_CARTA Gusini
+        Lirili Larila scelta_computer Trippi Troppi SCELTA_SASSO Gusini
+            Bombardiro Crocodilo "Giocatore Vince! Carta batte Sasso!"
+        Boneca Ambalabu # Computer chose Scissors
+            Bombardiro Crocodilo "Computer Vince! Forbice batte Carta!"
+        Trulimero Trulicina
+    Trulimero Trulicina
+
+    # Player chose Scissors
+    Lirili Larila scelta_giocatore Trippi Troppi SCELTA_FORBICE Gusini
+        Lirili Larila scelta_computer Trippi Troppi SCELTA_CARTA Gusini
+            Bombardiro Crocodilo "Giocatore Vince! Forbice batte Carta!"
+        Boneca Ambalabu # Computer chose Rock
+            Bombardiro Crocodilo "Computer Vince! Sasso batte Forbice!"
+        Trulimero Trulicina
+    Trulimero Trulicina
+
+Trulimero Trulicina # End of the main Else (not a tie)
+
+Bombardiro Crocodilo "---"
+Bombardiro Crocodilo "Partita Finita! Ballerina Cappucina!"
 """
-    brainrot_input = st.text_area("Enter code here:", height=400, value=example_code)
+    brainrot_input = st.text_area("Enter code here:", height=600, value=example_code)
+
+    with st.expander("Show Brainrot Keyword Reference"):
+        st.markdown(KEYWORD_HELP)
+
     run_button = st.button("Run Bombardiro! 🐊")
 
+
 with col2:
-    st.subheader("Output & Translation:")
+    st.subheader("Execution Result:")
 
     if run_button and brainrot_input:
         st.markdown("---")
         try:
-            st.write("**Python Translation:**")
             python_code = transpile_to_python(brainrot_input)
-            st.code(python_code, language='python')
 
-            st.write("**Execution Result:**")
             code_output = io.StringIO()
             with contextlib.redirect_stdout(code_output):
-                exec(python_code, {})
+                exec(python_code, {'random': random})
 
             output_string = code_output.getvalue()
             if output_string:
@@ -191,6 +287,9 @@ with col2:
             st.error(f"🚨 Value Error! 🚨\n{e}")
         except SyntaxError as e:
              st.error(f"🚨 Syntax Error! 🚨\n{e}")
+        except NameError as e:
+             st.error(f"🚨 Name Error! 🚨\n{e}")
+             st.info("Did you forget to assign a variable using 'Tralalero Tralala' before using it?")
         except Exception as e:
             st.error(f"🚨 Unexpected Error! 🚨\nType: {type(e).__name__}\nMessage: {e}")
             st.code(traceback.format_exc())
@@ -200,4 +299,3 @@ with col2:
 
 st.markdown("---")
 st.markdown("Created with Ambalabu and Capuccino Assassino!")
-    
