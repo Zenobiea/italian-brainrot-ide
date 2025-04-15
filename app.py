@@ -262,7 +262,7 @@ Bombardiro Crocodilo "GG! Ballerina Cappucina!"
     brainrot_input = st.text_area("Code goes here:", height=450, value=example_code)
 
     # --- Player Choice Input ---
-    st.subheader("Ur Move Playa:")
+    st.subheader("Ur Move Player-chan:")
     player_choice_map = {"Sasso 🗿 (Rock)": 1, "Carta 📄 (Paper)": 2, "Forbice ✂️ (Scissors)": 3}
     player_choice_label = st.radio(
         "Pick ur fighter:",
