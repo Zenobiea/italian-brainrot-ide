@@ -70,43 +70,46 @@ def transpile_to_python(brainrot_code):
     indent_level = 0
     indent_space = "    "
     lines = brainrot_code.splitlines()
-    processed_lines = []
+    processed_lines_with_levels = []
     line_number = 0
 
     for line in lines:
         line_number += 1
         stripped_line = line.strip()
+        current_line_level = indent_level
 
         if stripped_line.startswith('#') or not stripped_line:
-            processed_lines.append((indent_level, stripped_line))
+            processed_lines_with_levels.append((current_line_level, stripped_line))
             continue
 
         if stripped_line == "Trulimero Trulicina" or stripped_line == "Ballerina Cappucina":
             if indent_level == 0:
                 raise IndentationError(f"Errore Crocodilo! Dedent ('{stripped_line}') without matching if/while on line {line_number}")
             indent_level -= 1
-            processed_lines.append((indent_level, "# dedent marker"))
+            current_line_level = indent_level
+            processed_lines_with_levels.append((current_line_level, "# dedent marker"))
             continue
 
         if stripped_line == "Boneca Ambalabu":
             if indent_level == 0:
                  raise IndentationError(f"Errore Crocodilo! Else ('{stripped_line}') without matching if on line {line_number}")
-            processed_lines.append((indent_level - 1, "else:"))
+            current_line_level = indent_level - 1
+            processed_lines_with_levels.append((current_line_level, "else:"))
             continue
 
-        processed_lines.append((indent_level, stripped_line))
+        processed_lines_with_levels.append((current_line_level, stripped_line))
 
         if stripped_line.startswith("Lirili Larila") or \
            stripped_line.startswith("Tung Tung Tung Tung Tung Tung Tung Tung Tung Sahur"):
             indent_level += 1
 
+
     final_python_code = []
-    for level, line_content in processed_lines:
+    for level, line_content in processed_lines_with_levels:
+        if line_content == "# dedent marker": continue
+
         current_indent = indent_space * level
         original_line = line_content
-
-        if original_line == "# dedent marker": continue
-
         processed_line = original_line.strip()
 
         assign_match = re.match(r"Tralalero Tralala\s+(\w+)\s+Trippi Troppi\s+(.*)", processed_line)
@@ -156,18 +159,22 @@ def transpile_to_python(brainrot_code):
 
         elif processed_line == "else:":
             pass
+
         elif processed_line.startswith('#') or not processed_line:
             pass
 
 
-        if processed_line and not processed_line.isspace():
+        if processed_line or (original_line.startswith('#')):
              final_python_code.append(current_indent + processed_line)
+        elif original_line and not original_line.strip():
+             final_python_code.append("")
+
 
     return "\n".join(final_python_code)
 
 
 st.set_page_config(page_title="Italian Brainrot IDE", layout="wide")
-st.title("Italian Brainrot Interpreter frfr icl im genius")
+st.title("Italian Brainrot Interpreter frfr icll im a genius ikr </3")
 st.caption("Write your 'Tralalero Tralala' code below and watch the magic!")
 
 col1, col2 = st.columns(2)
@@ -177,15 +184,11 @@ with col1:
     example_code = """# Rock Paper Scissors - Brainrot Edition!
 Bombardiro Crocodilo "Benvenuti al Bombardiro Sasso Carta Forbice!"
 
-# Define choices: 1=Sasso (Rock), 2=Carta (Paper), 3=Forbice (Scissors)
 Tralalero Tralala SCELTA_SASSO Trippi Troppi 1
 Tralalero Tralala SCELTA_CARTA Trippi Troppi 2
 Tralalero Tralala SCELTA_FORBICE Trippi Troppi 3
 
-# --- Player's Choice (Simulated) ---
-# !!! EDIT THIS LINE TO CHANGE YOUR CHOICE !!!
-Tralalero Tralala scelta_giocatore Trippi Troppi SCELTA_CARTA # Change to SCELTA_SASSO or SCELTA_FORBICE
-# !!! ----------------------------- !!!
+Tralalero Tralala scelta_giocatore Trippi Troppi SCELTA_CARTA
 
 Bombardiro Crocodilo "---"
 Bombardiro Crocodilo "Giocatore ha scelto:"
@@ -199,8 +202,6 @@ Lirili Larila scelta_giocatore Trippi Troppi SCELTA_FORBICE Gusini
     Bombardiro Crocodilo "Forbice ✂️"
 Trulimero Trulicina
 
-# --- Computer's Choice (Random) ---
-# Uses the special RANDOM_TRALALERO keyword
 Tralalero Tralala scelta_computer Trippi Troppi RANDOM_TRALALERO 1 3
 Bombardiro Crocodilo "Computer ha scelto:"
 Lirili Larila scelta_computer Trippi Troppi SCELTA_SASSO Gusini
@@ -215,42 +216,37 @@ Trulimero Trulicina
 Bombardiro Crocodilo "---"
 
 
-# --- Determine the Winner ---
 Bombardiro Crocodilo "Risultato Tralalero:"
 
-# Check for Tie
 Lirili Larila scelta_giocatore Trippi Troppi scelta_computer Gusini
     Bombardiro Crocodilo "Pareggio! Boneca Ambalabu!"
-Boneca Ambalabu # Not a tie, check win conditions
+Boneca Ambalabu
 
-    # Player chose Rock
     Lirili Larila scelta_giocatore Trippi Troppi SCELTA_SASSO Gusini
         Lirili Larila scelta_computer Trippi Troppi SCELTA_FORBICE Gusini
             Bombardiro Crocodilo "Giocatore Vince! Sasso batte Forbice!"
-        Boneca Ambalabu # Computer chose Paper
+        Boneca Ambalabu
             Bombardiro Crocodilo "Computer Vince! Carta batte Sasso!"
         Trulimero Trulicina
     Trulimero Trulicina
 
-    # Player chose Paper
     Lirili Larila scelta_giocatore Trippi Troppi SCELTA_CARTA Gusini
         Lirili Larila scelta_computer Trippi Troppi SCELTA_SASSO Gusini
             Bombardiro Crocodilo "Giocatore Vince! Carta batte Sasso!"
-        Boneca Ambalabu # Computer chose Scissors
+        Boneca Ambalabu
             Bombardiro Crocodilo "Computer Vince! Forbice batte Carta!"
         Trulimero Trulicina
     Trulimero Trulicina
 
-    # Player chose Scissors
     Lirili Larila scelta_giocatore Trippi Troppi SCELTA_FORBICE Gusini
         Lirili Larila scelta_computer Trippi Troppi SCELTA_CARTA Gusini
             Bombardiro Crocodilo "Giocatore Vince! Forbice batte Carta!"
-        Boneca Ambalabu # Computer chose Rock
+        Boneca Ambalabu
             Bombardiro Crocodilo "Computer Vince! Sasso batte Forbice!"
         Trulimero Trulicina
     Trulimero Trulicina
 
-Trulimero Trulicina # End of the main Else (not a tie)
+Trulimero Trulicina
 
 Bombardiro Crocodilo "---"
 Bombardiro Crocodilo "Partita Finita! Ballerina Cappucina!"
