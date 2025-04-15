@@ -167,7 +167,7 @@ def transpile_to_python(brainrot_code):
 
 
 st.set_page_config(page_title="Italian Brainrot IDE", layout="wide")
-st.title("🤪 Italian Brainrot Interpreter 🤪")
+st.title("Italian Brainrot Interpreter frfr icl im genius")
 st.caption("Write your 'Tralalero Tralala' code below and watch the magic!")
 
 col1, col2 = st.columns(2)
