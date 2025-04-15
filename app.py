@@ -200,8 +200,4 @@ with col2:
 
 st.markdown("---")
 st.markdown("Created with Ambalabu and Capuccino Assassino!")
-    elif run_button:
-        st.warning("Please enter some Brainrot code before running!")
-
-st.markdown("---")
-st.markdown("Created with Ambalabu and Capuccino Assassino!") 
+    
