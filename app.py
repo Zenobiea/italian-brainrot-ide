@@ -139,27 +139,27 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Your Brainrot Code:")
-    example_code = """# Example Program!
-Tralalero Tralala message Trippi Troppi "Ciao Mondo Crocodilo!"
-Bombardiro Crocodilo message
-
-Tralalero Tralala x Trippi Troppi 5
-Tralalero Tralala y Trippi Troppi 10
-Tralalero Tralala somma Trippi Troppi x Brr Brr Patapim y
-
-Bombardiro Crocodilo "La somma e':"
-Bombardiro Crocodilo somma
-
-# Ciclo
-Tralalero Tralala i Trippi Troppi 0
-Tung Tung Tung Tung Tung Tung Tung Tung Tung Sahur i Bombombini Gusini Gusini 3 Bananini
-    Bombardiro Crocodilo "Giro numero:"
-    Bombardiro Crocodilo i
-    Tralalero Tralala i Trippi Troppi i Brr Brr Patapim 1
-Ballerina Cappucina
-
-Bombardiro Crocodilo
-Bombardiro Crocodilo "Finito!"
+    example_code = """Keywords to remember chat
+    "Tralalero Tralala": "assignment_start",
+    "Bombardiro Crocodilo": "print_command",
+    "U Din Din Din Din Dun Ma Din Din Din Dun": "int(input())", #disabled for web
+    "Lirili Larila": "if",
+    "Gusini": ":",
+    "Boneca Ambalabu": "else:",
+    "Trulimero Trulicina": "dedent_marker",
+    "Tung Tung Tung Tung Tung Tung Tung Tung Tung Sahur": "while",
+    "Bananini": ":",
+    "Ballerina Cappucina": "dedent_marker",
+    "Frigo Camelo Trippi Troppi": ">=",
+    "Bombombini Gusini Gusini Trippi Troppi": "<=",
+    "Bombombini Gusini Gusini": "<",
+    "Frigo Camelo": ">",
+    "Trippi Troppi": "==",
+    "La Vaca Saturno Saturnita": "!=",
+    "Brr Brr Patapim": "+",
+    "Chimpanzini Bananini": "-",
+    "Bombombini Gusini": "*",
+    "Capuccino Assassino": "/",
 """
     brainrot_input = st.text_area("Enter code here:", height=400, value=example_code)
     run_button = st.button("Run Bombardiro! 🐊")
